@@ -52,4 +52,9 @@ public class ArtistController {
         return artistsRepository.save(id);
     }
 
+    @RequestMapping(method = RequestMethod.PUT, value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
+    public Artist updateArtist(@RequestBody Artist id){
+        return artistsRepository.save(id);
+    }
+
 }
