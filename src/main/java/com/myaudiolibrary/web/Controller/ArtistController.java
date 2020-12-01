@@ -2,10 +2,14 @@ package com.myaudiolibrary.web.Controller;
 
 import com.myaudiolibrary.web.Repository.ArtistsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import com.myaudiolibrary.web.Model.Artist;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -19,5 +23,25 @@ public class ArtistController {
             @PathVariable(value = "id") Integer id){
         Optional<Artist> artist = artistsRepository.findById(id);
         return artist.get();
+
     }
+
+    @RequestMapping(method = RequestMethod.GET, value= "", params = {"name"}, produces = MediaType.APPLICATION_JSON_VALUE)
+    public Artist searchArtistByName(@RequestParam String name){
+        System.out.println(name);
+        Artist searchedArtist = artistsRepository.findByName(name);
+        System.out.println(searchedArtist);
+        return searchedArtist;
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Page<Artist> listArtist(
+            @RequestParam Integer page,
+            @RequestParam Integer size,
+            @RequestParam String sortProperty,
+            @RequestParam String sortDirection
+    ){
+        return artistsRepository.findAll(PageRequest.of(page, size, Sort.Direction.fromString(sortDirection), sortProperty));
+    }
+
 }
