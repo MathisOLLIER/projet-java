@@ -19,6 +19,7 @@ public class ArtistController {
 
     @Autowired
     private ArtistsRepository artistsRepository;
+
     @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public Artist getArtistById(
             @PathVariable(value = "id") Integer id){
@@ -28,11 +29,15 @@ public class ArtistController {
     }
 
     @RequestMapping(method = RequestMethod.GET, value= "", params = {"name"}, produces = MediaType.APPLICATION_JSON_VALUE)
-    public Artist searchArtistByName(
-            @RequestParam String name){
-        System.out.println(name);
-        Artist searchedArtist = artistsRepository.findByName(name);
-        System.out.println(searchedArtist);
+    public Page<Artist> searchArtistByName(
+            @RequestParam String name,
+            @RequestParam Integer page,
+            @RequestParam Integer size,
+            @RequestParam String sortProperty,
+            @RequestParam String sortDirection){
+
+        Page<Artist> searchedArtist = artistsRepository.findByName(name,PageRequest.of(page, size, Sort.Direction.fromString(sortDirection), sortProperty));
+
         return searchedArtist;
     }
 
@@ -55,6 +60,12 @@ public class ArtistController {
     @RequestMapping(method = RequestMethod.PUT, value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)
     public Artist updateArtist(@RequestBody Artist id){
         return artistsRepository.save(id);
+    }
+
+    @RequestMapping(method = RequestMethod.DELETE, value = "/{id}")
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public void deleteArtist(@PathVariable("id")Integer id){
+        this.artistsRepository.delete(getArtistById(id));
     }
 
 }

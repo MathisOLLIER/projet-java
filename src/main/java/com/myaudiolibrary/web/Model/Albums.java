@@ -10,7 +10,7 @@ public class Albums {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "AlbumId")
     private Integer id;
-
+    @Column(name = "Title")
     private String title;
 
 
